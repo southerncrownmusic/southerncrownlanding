@@ -228,7 +228,7 @@ export default function SouthernCrownLanding() {
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
             {/* title overlay on the image */}
             <div className="absolute bottom-4 left-0 right-0 px-5">
-              <p className="text-5xl font-bold leading-none text-center">southern crown</p>
+              <p className="font-bold leading-none text-center whitespace-nowrap text-[clamp(28px,11vw,56px)]">southern crown</p>
             </div>
           </div>
         </div>
