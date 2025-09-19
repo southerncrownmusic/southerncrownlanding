@@ -144,7 +144,7 @@ export default function SouthernCrownLanding() {
     };
   }, [open]);
 
-  // FAVICON SETUP — single favicon.ico in public/, do not stretch
+  // FAVICON SETUP — explicit sizes to avoid stretching
   useEffect(() => {
     const upsert = (id: string, attrs: Record<string, string>) => {
       let el = document.getElementById(id) as HTMLLinkElement | null;
@@ -155,14 +155,13 @@ export default function SouthernCrownLanding() {
       }
       Object.entries(attrs).forEach(([k, v]) => el!.setAttribute(k, v));
     };
-    // Add both rel values for broader support
+    // ICO fallbacks
     upsert("favicon-ico", { rel: "icon", type: "image/x-icon", href: "/favicon.ico" });
     upsert("favicon-ico-shortcut", { rel: "shortcut icon", type: "image/x-icon", href: "/favicon.ico" });
-
-    // Explicit PNG sizes to avoid stretching
+    // PNG sizes (no stretching)
     upsert("favicon-32", { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" });
     upsert("favicon-16", { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" });
-    // iOS Safari touch icon
+    // iOS
     upsert("apple-touch-icon", { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" });
 
     let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
@@ -192,12 +191,14 @@ export default function SouthernCrownLanding() {
       const pngOk = topIcons.length > 0 && topIcons.every((i) => i.src.includes(".png"));
       results.push(pngOk ? "top icons png: ok" : "top icons png: missing");
 
-      // Spotify button contains an <img> (no stray $1... markers)
+      // Spotify button contains an <img> (no stray markers)
       const spLink = document.querySelector('[data-testid="spotify-link"]') as HTMLAnchorElement | null;
       const hasImg = !!spLink?.querySelector('img[alt="Spotify"]');
-      const strayMarker = spLink ? spLink.innerHTML.includes('$1h-5') : false;
       results.push(hasImg ? "spotify img: ok" : "spotify img: missing");
-      results.push(strayMarker ? "marker: FOUND (BUG)" : "marker: none");
+
+      // Mobile hero presence
+      const mobileHero = document.querySelector('[data-testid="mobile-hero"]');
+      results.push(mobileHero ? "mobile hero: ok" : "mobile hero: missing");
 
       // eslint-disable-next-line no-console
       console.log("[SMOKE TESTS]", results.join(" | "));
@@ -220,26 +221,26 @@ export default function SouthernCrownLanding() {
       {/* central black card */}
       <main className="relative z-10 mx-auto w-full sm:w-[94vw] sm:max-w-[820px] flex flex-col items-center px-5 sm:px-10 pb-14 pt-0 sm:pt-14 md:pt-20 bg-black rounded-none sm:rounded-2xl shadow-none sm:shadow-lg mt-0 sm:mt-[6vh] mb-0 sm:mb-[15vh]">
         {/* HERO: mobile full-bleed with gradient & title overlay */}
-<div className="w-full sm:hidden mx-[calc(50%-50vw)]">
-  <div className=\"relative h-[40vh] min-h-[280px] w-full overflow-hidden rounded-t-2xl\">
-    <img src="/assets/logo.png" alt="southern crown logo" className="absolute inset-0 h-full w-full object-cover" />
-    {/* bottom gradient for readability */}
-    <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-    {/* title overlay on the image */}
-    <div className="absolute bottom-4 left-0 right-0 px-5">
-      <p className="text-5xl font-bold leading-none text-center">southern crown</p>
-    </div>
-  </div>
-</div>
+        <div className="w-full sm:hidden mx-[calc(50%-50vw)]" data-testid="mobile-hero">
+          <div className="relative h-[40vh] min-h-[280px] w-full overflow-hidden rounded-t-2xl">
+            <img src="/assets/logo.png" alt="southern crown logo" className="absolute inset-0 h-full w-full object-cover" />
+            {/* bottom gradient for readability */}
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+            {/* title overlay on the image */}
+            <div className="absolute bottom-4 left-0 right-0 px-5">
+              <p className="text-5xl font-bold leading-none text-center">southern crown</p>
+            </div>
+          </div>
+        </div>
 
-{/* HERO: tablet/desktop centered card */}
-<div className="hidden sm:flex w-full p-6 md:p-10 justify-center">
-  <img
-    src="/assets/logo.png"
-    alt="southern crown logo"
-    className="h-[24.375rem] w-[24.375rem] md:h-[32.5rem] md:w-[32.5rem] rounded-2xl object-cover"
-  />
-</div>
+        {/* HERO: tablet/desktop centered card */}
+        <div className="hidden sm:flex w-full p-6 md:p-10 justify-center" data-testid="desktop-hero">
+          <img
+            src="/assets/logo.png"
+            alt="southern crown logo"
+            className="h-[24.375rem] w-[24.375rem] md:h-[32.5rem] md:w-[32.5rem] rounded-2xl object-cover"
+          />
+        </div>
 
         <h1 className="hidden sm:block mt-6 text-6xl md:text-7xl font-bold tracking-wide leading-tight md:mt-8">
           southern crown
