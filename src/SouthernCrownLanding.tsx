@@ -207,22 +207,22 @@ export default function SouthernCrownLanding() {
   return (
     <div className="min-h-screen w-full bg-black text-white relative flex items-center justify-center">
       {/* background halo */}
-      <div className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center">
+      <div className="pointer-events-none fixed inset-0 z-0 hidden sm:flex items-center justify-center">
         <div className="h-[1400px] w-[1400px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18)_0%,rgba(0,0,0,0)_70%)] blur-3xl" />
       </div>
 
       {/* central black card */}
-      <main className="relative z-10 mx-auto w-[94vw] max-w-[820px] flex flex-col items-center px-6 md:px-10 pb-16 pt-10 sm:pt-14 md:pt-20 bg-black rounded-2xl shadow-lg mt-[6vh] mb-[15vh]">
-        <div className="p-6 md:p-10">
+      <main className="relative z-10 mx-auto w-full sm:w-[94vw] sm:max-w-[820px] flex flex-col items-center px-5 sm:px-10 pb-14 pt-8 sm:pt-14 md:pt-20 bg-black rounded-none sm:rounded-2xl shadow-none sm:shadow-lg mt-0 sm:mt-[6vh] mb-0 sm:mb-[15vh]">
+        <div className="w-full p-0 sm:p-6 md:p-10">
           {/* LOGO — rounded corners + cover, 25% larger */}
           <img
             src="/assets/logo.png"
             alt="southern crown logo"
-            className="h-[18.75rem] w-[18.75rem] md:h-[25rem] md:w-[25rem] rounded-2xl object-cover"
+            className="w-full h-56 object-cover rounded-none sm:h-[24.375rem] sm:w-[24.375rem] md:h-[32.5rem] md:w-[32.5rem] sm:rounded-2xl"
           />
         </div>
 
-        <h1 className="mt-6 text-4xl md:text-5xl font-bold tracking-wide leading-tight md:mt-8">
+        <h1 className="mt-6 text-5xl sm:text-6xl md:text-7xl font-bold tracking-wide leading-tight md:mt-8">
           southern crown
         </h1>
 
@@ -247,11 +247,11 @@ export default function SouthernCrownLanding() {
 
         {/* TRACK SECTION */}
         <section className="mt-10 w-full" data-testid="track-section">
-          <div className="rounded-xl bg-neutral-900/80 p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
+          <div className="rounded-xl bg-neutral-900/80 p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
             <h2 className="mb-4 text-xl font-semibold md:text-2xl">Follow You – Listen Now.</h2>
 
-            <div className="flex items-center gap-4 md:gap-6">
-              <div className="relative h-28 w-28 overflow-hidden rounded-lg md:h-40 md:w-40">
+            <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
+              <div className="relative h-24 w-24 overflow-hidden rounded-lg sm:h-28 sm:w-28 md:h-40 md:w-40">
                 {/* COVER — replace with your file */}
                 <img src="/assets/cover.jpg" alt="Follow You cover" className="h-full w-full object-cover" />
                 <button
@@ -284,17 +284,17 @@ export default function SouthernCrownLanding() {
 
             {/* Streaming actions capsule */}
             <div className="mt-5" data-testid="actions-capsule">
-              <div className="relative w-full rounded-full bg-neutral-950/90 py-5">
-                <div className="pointer-events-none absolute inset-y-2 left-[33.333%] w-px bg-white/20" />
-                <div className="pointer-events-none absolute inset-y-2 left-[66.666%] w-px bg-white/20" />
+              <div className="relative w-full rounded-full bg-neutral-950/90 py-3 sm:py-5">
+                <div className="pointer-events-none absolute inset-y-1 sm:inset-y-2 left-[33.333%] w-px bg-white/20" />
+                <div className="pointer-events-none absolute inset-y-1 sm:inset-y-2 left-[66.666%] w-px bg-white/20" />
 
                 <div className="grid grid-cols-3 items-center text-center text-white/90">
-                  <a href="https://open.spotify.com/track/4bg00VyK9vvtSt2E4XiXkB?si=4bc821c912034e39" data-testid="spotify-link" className="group flex items-center justify-center gap-2 text-base md:text-lg font-semibold hover:text-white">
-                    <img src="/assets/icons/spotify.png" alt="Spotify" className="h-5 w-5 invert opacity-90 group-hover:opacity-100" />
+                  <a href="https://open.spotify.com/track/4bg00VyK9vvtSt2E4XiXkB?si=4bc821c912034e3" data-testid="spotify-link" className="group flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg font-semibold hover:text-white">
+                    <img src="/assets/icons/spotify.png" alt="Spotify" className="h-4 w-4 sm:h-5 sm:w-5 invert opacity-90 group-hover:opacity-100" />
                     <span>Spotify</span>
                   </a>
-                  <a href="https://music.apple.com/us/song/follow-you/1837969569" className="text-base md:text-lg font-semibold hover:text-white">Music</a>
-                  <button data-testid="more-button" onClick={() => setOpen(true)} className="text-base md:text-lg font-semibold hover:text-white">More</button>
+                  <a href="https://music.apple.com/us/song/follow-you/1837969569" className="text-sm sm:text-base md:text-lg font-semibold hover:text-white">Music</a>
+                  <button data-testid="more-button" onClick={() => setOpen(true)} className="text-sm sm:text-base md:text-lg font-semibold hover:text-white">More</button>
                 </div>
               </div>
             </div>
