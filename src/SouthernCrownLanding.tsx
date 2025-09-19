@@ -214,14 +214,14 @@ export default function SouthernCrownLanding() {
       {/* central black card */}
       <main className="relative z-10 mx-auto w-full sm:w-[94vw] sm:max-w-[820px] flex flex-col items-center px-5 sm:px-10 pb-14 pt-0 sm:pt-14 md:pt-20 bg-black rounded-none sm:rounded-2xl shadow-none sm:shadow-lg mt-0 sm:mt-[6vh] mb-0 sm:mb-[15vh]">
         {/* HERO: mobile full-bleed with gradient & title overlay */}
-<div className="w-full -mx-5 sm:mx-0 sm:hidden">
+<div className="w-full sm:hidden mx-[calc(50%-50vw)]">
   <div className="relative h-[40vh] min-h-[280px] w-full">
     <img src="/assets/logo.png" alt="southern crown logo" className="absolute inset-0 h-full w-full object-cover" />
     {/* bottom gradient for readability */}
     <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
     {/* title overlay on the image */}
-    <div className="absolute bottom-4 left-5 right-5">
-      <p className="text-5xl font-bold leading-none">southern crown</p>
+    <div className="absolute bottom-4 left-0 right-0 px-5">
+      <p className="text-5xl font-bold leading-none text-center">southern crown</p>
     </div>
   </div>
 </div>
