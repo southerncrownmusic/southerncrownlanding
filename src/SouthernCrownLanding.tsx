@@ -248,19 +248,19 @@ export default function SouthernCrownLanding() {
 
         {/* SOCIAL ICONS — PNGs inverted to white */}
         <nav className="mt-4 flex items-center gap-5 md:gap-6">
-          <a href="#" aria-label="Spotify" className="transition-opacity hover:opacity-80">
+          <a href="https://open.spotify.com/artist/5u8TdO8QQDlkwrNDkwGtLG?si=UWaWTyDxR06fdtRM3ww21Q" aria-label="Spotify" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/spotify.png" className="h-6 w-6 invert" alt="Spotify" />
           </a>
-          <a href="#" aria-label="Apple Music" className="transition-opacity hover:opacity-80">
+          <a href="https://music.apple.com/us/artist/southern-crown/1837568576" aria-label="Apple Music" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/apple.png" className="h-6 w-6 invert" alt="Apple Music" />
           </a>
-          <a href="#" aria-label="Instagram" className="transition-opacity hover:opacity-80">
+          <a href="https://www.instagram.com/southerncrown/" aria-label="Instagram" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/instagram.png" className="h-6 w-6 invert" alt="Instagram" />
           </a>
-          <a href="#" aria-label="YouTube" className="transition-opacity hover:opacity-80">
+          <a href="https://www.youtube.com/@southern-crown-music" aria-label="YouTube" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/youtube.png" className="h-6 w-6 invert" alt="YouTube" />
           </a>
-          <a href="#" aria-label="Facebook" className="transition-opacity hover:opacity-80">
+          <a href="https://www.facebook.com/southerncrownmusic" aria-label="Facebook" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/facebook.png" className="h-6 w-6 invert" alt="Facebook" />
           </a>
         </nav>
@@ -309,11 +309,11 @@ export default function SouthernCrownLanding() {
                 <div className="pointer-events-none absolute inset-y-1 sm:inset-y-2 left-[66.666%] w-px bg-white/20" />
 
                 <div className="grid grid-cols-3 items-center text-center text-white/90">
-                  <a href="#" data-testid="spotify-link" className="group flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg font-semibold hover:text-white">
+                  <a href="https://open.spotify.com/track/4bg00VyK9vvtSt2E4XiXkB?si=4bc821c912034e3" data-testid="spotify-link" className="group flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg font-semibold hover:text-white">
                     <img src="/assets/icons/spotify.png" alt="Spotify" className="h-4 w-4 sm:h-5 sm:w-5 invert opacity-90 group-hover:opacity-100" />
                     <span>Spotify</span>
                   </a>
-                  <a href="#" className="text-sm sm:text-base md:text-lg font-semibold hover:text-white">Music</a>
+                  <a href="https://music.apple.com/us/song/follow-you/1837969569" className="text-sm sm:text-base md:text-lg font-semibold hover:text-white">Music</a>
                   <button data-testid="more-button" onClick={() => setOpen(true)} className="text-sm sm:text-base md:text-lg font-semibold hover:text-white">More</button>
                 </div>
               </div>
@@ -352,10 +352,10 @@ export default function SouthernCrownLanding() {
             <div className="p-8">
               <ul className="space-y-6">
                 {[
-                  { name: "Spotify", icon: "/assets/icons/spotify.png", href: "#" },
-                  { name: "Apple Music", icon: "/assets/icons/apple.png", href: "#" },
-                  { name: "YouTube Music", icon: "/assets/icons/ytmusic.png", href: "#" },
-                  { name: "Deezer", icon: "/assets/icons/deezer.png", href: "#" },
+                  { name: "Spotify", icon: "/assets/icons/spotify.png", href: "https://open.spotify.com/track/4bg00VyK9vvtSt2E4XiXkB?si=6330df2f8bbe4809" },
+                  { name: "Apple Music", icon: "/assets/icons/apple.png", href: "https://music.apple.com/us/song/follow-you/1837969569" },
+                  { name: "YouTube Music", icon: "/assets/icons/ytmusic.png", href: "https://music.youtube.com/watch?v=22EQ_4S93nI&si=ZYB3Fy1IjlQPXFvl" },
+                  { name: "Deezer", icon: "/assets/icons/deezer.png", href: "https://link.deezer.com/s/315rMlkS4eWgPcwxR9VTq" },
                 ].map((p) => (
                   <li key={p.name} className="flex items-center justify-between border-b border-neutral-200 pb-4 last:border-b-0">
                     <span className="flex items-center gap-3">
