@@ -159,6 +159,12 @@ export default function SouthernCrownLanding() {
     upsert("favicon-ico", { rel: "icon", type: "image/x-icon", href: "/favicon.ico" });
     upsert("favicon-ico-shortcut", { rel: "shortcut icon", type: "image/x-icon", href: "/favicon.ico" });
 
+    // Explicit PNG sizes to avoid stretching
+    upsert("favicon-32", { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" });
+    upsert("favicon-16", { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" });
+    // iOS Safari touch icon
+    upsert("apple-touch-icon", { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" });
+
     let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
     if (!meta) {
       meta = document.createElement("meta");
@@ -215,7 +221,7 @@ export default function SouthernCrownLanding() {
       <main className="relative z-10 mx-auto w-full sm:w-[94vw] sm:max-w-[820px] flex flex-col items-center px-5 sm:px-10 pb-14 pt-0 sm:pt-14 md:pt-20 bg-black rounded-none sm:rounded-2xl shadow-none sm:shadow-lg mt-0 sm:mt-[6vh] mb-0 sm:mb-[15vh]">
         {/* HERO: mobile full-bleed with gradient & title overlay */}
 <div className="w-full sm:hidden mx-[calc(50%-50vw)]">
-  <div className="relative h-[40vh] min-h-[280px] w-full">
+  <div className=\"relative h-[40vh] min-h-[280px] w-full overflow-hidden rounded-t-2xl\">
     <img src="/assets/logo.png" alt="southern crown logo" className="absolute inset-0 h-full w-full object-cover" />
     {/* bottom gradient for readability */}
     <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
