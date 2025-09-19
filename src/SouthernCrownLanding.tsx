@@ -9,10 +9,10 @@ export default function SouthernCrownLanding() {
   const [audioError, setAudioError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  /**
-   * Wait until the browser can play: readyState >= 3 or 'canplay' event.
-   * Timeout protects against broken/404/CORS audio.
-   */
+  // robust body scroll lock when popup is open
+  const scrollLockY = useRef(0);
+
+  /** Wait until the browser can play: readyState >= 3 or 'canplay' event. */
   const waitForCanPlay = (audio: HTMLAudioElement) =>
     new Promise<void>((resolve, reject) => {
       if (audio.readyState >= 3) return resolve();
@@ -38,7 +38,9 @@ export default function SouthernCrownLanding() {
 
       audio.addEventListener("canplay", onCanPlay);
       audio.addEventListener("error", onError);
-      try { audio.load(); } catch {}
+      try {
+        audio.load();
+      } catch {}
     });
 
   const togglePlay = async () => {
@@ -83,7 +85,120 @@ export default function SouthernCrownLanding() {
 
   // Keep UI in sync with the real audio element
   useEffect(() => {
-    // Run simple smoke-tests only in dev (Vite)
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onEnded = () => {
+      setIsPlaying(false);
+      try {
+        if (audioRef.current) audioRef.current.currentTime = 0; // reset to start after finishing
+      } catch {}
+    };
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onCanPlay = () => setAudioReady(true);
+    const onError = () => setAudioError("Audio file failed to load.");
+
+    audio.addEventListener("ended", onEnded);
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("canplay", onCanPlay);
+    audio.addEventListener("error", onError);
+
+    return () => {
+      audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("canplay", onCanPlay);
+      audio.removeEventListener("error", onError);
+    };
+  }, []);
+
+  // disable background scroll when popup is open (robust, incl. iOS)
+  useEffect(() => {
+    const body = document.body;
+    const html = document.documentElement;
+    if (open) {
+      scrollLockY.current = window.scrollY || window.pageYOffset;
+      body.style.overflow = "hidden";
+      body.style.position = "fixed";
+      body.style.top = `-${scrollLockY.current}px`;
+      body.style.width = "100%";
+      // Prevent scroll chaining on mobile
+      html.style.overscrollBehavior = "contain";
+    } else {
+      body.style.overflow = "";
+      body.style.position = "";
+      const y = -parseInt(body.style.top || "0", 10) || scrollLockY.current || 0;
+      body.style.top = "";
+      body.style.width = "";
+      html.style.overscrollBehavior = "";
+      if (y) window.scrollTo(0, y);
+    }
+    return () => {
+      body.style.overflow = "";
+      body.style.position = "";
+      body.style.top = "";
+      body.style.width = "";
+      html.style.overscrollBehavior = "";
+    };
+  }, [open]);
+
+  // FAVICON SETUP — single favicon.ico in public/, do not stretch
+  useEffect(() => {
+    const upsert = (id: string, attrs: Record<string, string>) => {
+      let el = document.getElementById(id) as HTMLLinkElement | null;
+      if (!el) {
+        el = document.createElement("link");
+        el.id = id;
+        document.head.appendChild(el);
+      }
+      Object.entries(attrs).forEach(([k, v]) => el!.setAttribute(k, v));
+    };
+    // Add both rel values for broader support
+    upsert("favicon-ico", { rel: "icon", type: "image/x-icon", href: "/favicon.ico" });
+    upsert("favicon-ico-shortcut", { rel: "shortcut icon", type: "image/x-icon", href: "/favicon.ico" });
+
+    let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "theme-color");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", "#000000");
+  }, []);
+
+  // --- SMOKE TESTS (DEV ONLY) ---
+  const runSmokeTests = () => {
+    try {
+      const results: string[] = [];
+      const fav = document.getElementById("favicon-ico") as HTMLLinkElement | null;
+      results.push(fav && fav.getAttribute("href") === "/favicon.ico" ? "favicon: ok" : "favicon: missing");
+
+      const audio = audioRef.current;
+      results.push(audio ? "audio element: ok" : "audio element: missing");
+
+      const halo = document.querySelector(".pointer-events-none.fixed.inset-0.z-0");
+      results.push(halo ? "halo wrapper: ok" : "halo wrapper: missing");
+
+      // PNG icon check
+      const topIcons = Array.from(document.querySelectorAll("nav img")) as HTMLImageElement[];
+      const pngOk = topIcons.length > 0 && topIcons.every((i) => i.src.includes(".png"));
+      results.push(pngOk ? "top icons png: ok" : "top icons png: missing");
+
+      // Spotify button contains an <img> (no stray $1... markers)
+      const spLink = document.querySelector('[data-testid="spotify-link"]') as HTMLAnchorElement | null;
+      const hasImg = !!spLink?.querySelector('img[alt="Spotify"]');
+      const strayMarker = spLink ? spLink.innerHTML.includes('$1h-5') : false;
+      results.push(hasImg ? "spotify img: ok" : "spotify img: missing");
+      results.push(strayMarker ? "marker: FOUND (BUG)" : "marker: none");
+
+      // eslint-disable-next-line no-console
+      console.log("[SMOKE TESTS]", results.join(" | "));
+    } catch {}
+  };
+
+  useEffect(() => {
     if (typeof window !== "undefined" && import.meta && (import.meta as any).env?.DEV) {
       runSmokeTests();
     }
@@ -99,11 +214,11 @@ export default function SouthernCrownLanding() {
       {/* central black card */}
       <main className="relative z-10 mx-auto w-[94vw] max-w-[820px] flex flex-col items-center px-6 md:px-10 pb-16 pt-10 sm:pt-14 md:pt-20 bg-black rounded-2xl shadow-lg mt-[6vh] mb-[15vh]">
         <div className="p-6 md:p-10">
-          {/* LOGO — replace "/assets/logo.png" with your file. Now rounded & cover to fill area */}
+          {/* LOGO — rounded corners + cover, 25% larger */}
           <img
             src="/assets/logo.png"
             alt="southern crown logo"
-            className="h-60 w-60 md:h-80 md:w-80 rounded-2xl object-cover"
+            className="h-[18.75rem] w-[18.75rem] md:h-[25rem] md:w-[25rem] rounded-2xl object-cover"
           />
         </div>
 
@@ -111,21 +226,21 @@ export default function SouthernCrownLanding() {
           southern crown
         </h1>
 
-        {/* SOCIAL ICONS — use PNGs. We invert to look white on dark bg. */}
+        {/* SOCIAL ICONS — PNGs inverted to white */}
         <nav className="mt-4 flex items-center gap-5 md:gap-6">
-          <a href="#" aria-label="Spotify" className="transition-opacity hover:opacity-80">
+          <a href="https://open.spotify.com/artist/5u8TdO8QQDlkwrNDkwGtLG?si=UWaWTyDxR06fdtRM3ww21Q" aria-label="Spotify" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/spotify.png" className="h-6 w-6 invert" alt="Spotify" />
           </a>
-          <a href="#" aria-label="Apple Music" className="transition-opacity hover:opacity-80">
+          <a href="https://music.apple.com/us/artist/southern-crown/1837568576" aria-label="Apple Music" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/apple.png" className="h-6 w-6 invert" alt="Apple Music" />
           </a>
-          <a href="#" aria-label="Instagram" className="transition-opacity hover:opacity-80">
+          <a href="https://www.instagram.com/southerncrown/" aria-label="Instagram" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/instagram.png" className="h-6 w-6 invert" alt="Instagram" />
           </a>
-          <a href="#" aria-label="YouTube" className="transition-opacity hover:opacity-80">
+          <a href="https://www.youtube.com/@southern-crown-music" aria-label="YouTube" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/youtube.png" className="h-6 w-6 invert" alt="YouTube" />
           </a>
-          <a href="#" aria-label="Facebook" className="transition-opacity hover:opacity-80">
+          <a href="https://www.facebook.com/southerncrownmusic" aria-label="Facebook" className="transition-opacity hover:opacity-80">
             <img src="/assets/icons/facebook.png" className="h-6 w-6 invert" alt="Facebook" />
           </a>
         </nav>
@@ -137,7 +252,7 @@ export default function SouthernCrownLanding() {
 
             <div className="flex items-center gap-4 md:gap-6">
               <div className="relative h-28 w-28 overflow-hidden rounded-lg md:h-40 md:w-40">
-                {/* COVER — replace "/assets/cover.jpg" with your file */}
+                {/* COVER — replace with your file */}
                 <img src="/assets/cover.jpg" alt="Follow You cover" className="h-full w-full object-cover" />
                 <button
                   type="button"
@@ -167,19 +282,18 @@ export default function SouthernCrownLanding() {
               <p className="mt-3 text-xs text-red-400" aria-live="polite">{audioError}</p>
             )}
 
-            {/* Streaming actions capsule (centered items) */}
+            {/* Streaming actions capsule */}
             <div className="mt-5" data-testid="actions-capsule">
               <div className="relative w-full rounded-full bg-neutral-950/90 py-5">
-                {/* vertical dividers */}
                 <div className="pointer-events-none absolute inset-y-2 left-[33.333%] w-px bg-white/20" />
                 <div className="pointer-events-none absolute inset-y-2 left-[66.666%] w-px bg-white/20" />
 
                 <div className="grid grid-cols-3 items-center text-center text-white/90">
-                  <a href="#" data-testid="spotify-link" className="group flex items-center justify-center gap-2 text-base md:text-lg font-semibold hover:text-white">
-                    <img src="/assets/icons/spotify.png" alt="Spotify" className="h-5 w-5 opacity-90 group-hover:opacity-100" />
+                  <a href="https://open.spotify.com/track/4bg00VyK9vvtSt2E4XiXkB?si=4bc821c912034e39" data-testid="spotify-link" className="group flex items-center justify-center gap-2 text-base md:text-lg font-semibold hover:text-white">
+                    <img src="/assets/icons/spotify.png" alt="Spotify" className="h-5 w-5 invert opacity-90 group-hover:opacity-100" />
                     <span>Spotify</span>
                   </a>
-                  <a href="#" className="text-base md:text-lg font-semibold hover:text-white">Music</a>
+                  <a href="https://music.apple.com/us/song/follow-you/1837969569" className="text-base md:text-lg font-semibold hover:text-white">Music</a>
                   <button data-testid="more-button" onClick={() => setOpen(true)} className="text-base md:text-lg font-semibold hover:text-white">More</button>
                 </div>
               </div>
@@ -192,12 +306,12 @@ export default function SouthernCrownLanding() {
         </footer>
       </main>
 
-      {/* AUDIO PREVIEW — replace "/assets/preview.mp3" with your file */}
+      {/* AUDIO PREVIEW */}
       <audio ref={audioRef} src="/assets/preview.mp3" preload="auto" playsInline />
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 sm:p-6 overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 sm:p-6 overflow-y-auto overscroll-contain"
           onClick={() => setOpen(false)}
         >
           <div
@@ -217,12 +331,11 @@ export default function SouthernCrownLanding() {
 
             <div className="p-8">
               <ul className="space-y-6">
-                {/* STREAMING LIST IN POPUP — use PNG icons */}
                 {[
-                  { name: "Spotify", icon: "/assets/icons/spotify.png", href: "#" },
-                  { name: "Apple Music", icon: "/assets/icons/apple.png", href: "#" },
-                  { name: "YouTube Music", icon: "/assets/icons/ytmusic.png", href: "#" },
-                  { name: "Deezer", icon: "/assets/icons/deezer.png", href: "#" },
+                  { name: "Spotify", icon: "/assets/icons/spotify.png", href: "https://open.spotify.com/track/4bg00VyK9vvtSt2E4XiXkB?si=6330df2f8bbe4809" },
+                  { name: "Apple Music", icon: "/assets/icons/apple.png", href: "https://music.apple.com/us/song/follow-you/1837969569" },
+                  { name: "YouTube Music", icon: "/assets/icons/ytmusic.png", href: "https://music.youtube.com/watch?v=22EQ_4S93nI&si=ZYB3Fy1IjlQPXFvl" },
+                  { name: "Deezer", icon: "/assets/icons/deezer.png", href: "https://link.deezer.com/s/315rMlkS4eWgPcwxR9VTq" },
                 ].map((p) => (
                   <li key={p.name} className="flex items-center justify-between border-b border-neutral-200 pb-4 last:border-b-0">
                     <span className="flex items-center gap-3">
